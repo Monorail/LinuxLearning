@@ -1,6 +1,6 @@
 obj-m += hello.o
 
-KDIR = /usr/src/linux-headers-3.19.0-32-generic
+KDIR = /usr/src/linux-headers-3.16.0-38-generic
 
 
 all:

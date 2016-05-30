@@ -1,0 +1,1 @@
+cmd_/home/alex/Documents/LinuxLearning/HelloWorld/hello.ko := ld -r -m elf_x86_64 -T ./scripts/module-common.lds --build-id  -o /home/alex/Documents/LinuxLearning/HelloWorld/hello.ko /home/alex/Documents/LinuxLearning/HelloWorld/hello.o /home/alex/Documents/LinuxLearning/HelloWorld/hello.mod.o
