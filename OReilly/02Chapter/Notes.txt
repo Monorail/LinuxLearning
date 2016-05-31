@@ -1,0 +1,5 @@
+Init/exit functions:
+    use syntax: 
+        static int  __init initialization_function(void) {}
+        static void __exit cleanup_function(void) {}
+

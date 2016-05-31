@@ -1,0 +1,77 @@
+char devices typically located in /dev directory
+    have a c in the first row of ls -l 
+major and minor numbers located before date in ls -l
+    major identifies driver associated with device
+        ie /dev/null and /dev/zero managed by driver 1 
+    minor describes exactly which device is being used
+dev_t   
+    datatype that holds device numbers
+    macros in <linux/kdev_t.h>
+        MAJOR(dev_t dev);
+        MINOR(dev_t dev);
+        MKDEV(int major, int minor);
+    to declare device drivers, use register_chrdev_region(...) in <linux/fs.h>
+        name appears in /proc/devices and sysfs
+    dynamic DD declaration: alloc_chrdev_region(...)
+    call unregister_chrdev_region(...) in cleanup
+    
+Device methods
+    owner: a pointer to the module that owns the functions containing struct
+    llseek: moves the read/write position in a file. NULL return means undefined behavior will result from use
+    read: retrieve data from the device. 
+    aio_read: async read
+    write: sends data to the device
+    poll: queries whether writing to one or more file descriptors would block other device operations
+    ioctl: used to issue device-specific commands
+    mmap: requests mapping of device's memory to a process's address space
+    open: open device file for driver use
+    release: release device file from driver's use
+Substatial performance improvements can be realized by placing pointers to frequently acccessed members in the same hardware cache line
+        struct file_operations scull_fops = {
+            .owner = THIS_MODULE,
+            .llseek = scull_llseek,
+            .read = scull_read,
+            .write = scull_write,
+            .ioctl = scull_ioctl,
+            .open = scull_open,
+            .release = scull_release,
+        };
+The struct file, defined in <linux/fs.h> represents an open file.
+    created by the kernel on open() and used until close()    
+    f_mode: designates as read and or write  
+inode structure
+    kernel representation of actual file, not a file descriptor 
+    i_rdev: device numbr for device files
+    i_cdev: kernel structure that represents char devices. contains cdev struct
+the kernel represents char devices internally with cdev structs
+    <linux/cdev.h>
+    initalized with cdev_alloc(..._) or cdev_init(...)
+        then alert kernel with cdev_add(...)
+    after init always set /owner/ field to THIS_MODULE
+    do not call cdev_add until your device is completely set up as that is when the kernel will being using it
+An example of multiple minor device numbers being used for a single device is when selecting operating mode (such as density) for SCSI tape drivers
+open()
+    open() usually performs these tasks in drivers
+        check for device specific errors
+        initialize the device, if it's being opened for the first time
+        update the f_op pointer
+        allocate and fill any data structure to be put in filp->private_data
+    open() must identify what device is being opened only by using inode. a macro is used to move from inode's i_cdev field to the containing scull_dev struct.
+        container_of(...) in <linux/kernel.h> accomplishes this
+release()
+    multiple processes can have the same file open, so how does a driver know when an open device has really been closed?
+        not every close system call causes the release method to be invoked
+        the kernel keeps a count of the number of times a file structure is being used
+        fork and dup to not create new file sturctures, only open
+        
+
+
+
+
+
+
+
+
+
+
+
