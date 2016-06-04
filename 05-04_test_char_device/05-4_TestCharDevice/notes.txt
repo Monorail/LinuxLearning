@@ -1,0 +1,4 @@
+sudo mknod /dev/myTestDeviceFile c 900 1
+       |   > device name         |  |  > minor number
+       > make a device file      |  > major number    
+                                 > char device        

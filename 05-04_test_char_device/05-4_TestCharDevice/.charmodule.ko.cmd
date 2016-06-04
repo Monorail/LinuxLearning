@@ -1,0 +1,1 @@
+cmd_/home/alex/LinuxLearning/05-4_TestCharDevice/charmodule.ko := ld -r -m elf_x86_64 -T ./scripts/module-common.lds --build-id  -o /home/alex/LinuxLearning/05-4_TestCharDevice/charmodule.ko /home/alex/LinuxLearning/05-4_TestCharDevice/charmodule.o /home/alex/LinuxLearning/05-4_TestCharDevice/charmodule.mod.o
