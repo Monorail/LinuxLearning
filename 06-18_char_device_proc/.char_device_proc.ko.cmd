@@ -1,0 +1,1 @@
+cmd_/home/alex/LinuxLearning/06-18_char_device_proc/char_device_proc.ko := ld -r -m elf_x86_64 -T ./scripts/module-common.lds --build-id  -o /home/alex/LinuxLearning/06-18_char_device_proc/char_device_proc.ko /home/alex/LinuxLearning/06-18_char_device_proc/char_device_proc.o /home/alex/LinuxLearning/06-18_char_device_proc/char_device_proc.mod.o
