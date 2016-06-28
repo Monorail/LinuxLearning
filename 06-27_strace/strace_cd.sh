@@ -1,0 +1,1 @@
+strace bash cd.sh /

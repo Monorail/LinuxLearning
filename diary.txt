@@ -3,3 +3,9 @@ writing hello world i2c device driver for MPU-9250
 looked at guides at
     https://www.kernel.org/doc/Documentation/i2c/dev-interface
     https://www.kernel.org/doc/Documentation/i2c/functionality
+started lynda video series on embedded
+6/28/16
+read more of mpu-9250 datasheet
+fixed i2c_smbus_read_word_data not working
+	including i2c header was messing with i2c-dev header 
+https://www.raspberrypi.org/forums/viewtopic.php?f=31&t=19680
