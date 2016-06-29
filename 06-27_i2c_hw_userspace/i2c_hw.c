@@ -3,6 +3,8 @@
 #include <stdlib.h>
 #include <fcntl.h>    /* For O_RDWR */
 #include <unistd.h>   /* For open(), create() */
+#include <time.h>
+#include <sys/types.h>
 // #include <linux/i2c.h>
 
 int main(void){
@@ -18,7 +20,7 @@ int main(void){
 		exit(1);
 	}
 
-	int addr = 68;
+	int addr = 0x68;
 
 	if(ioctl(myI2cDevice, I2C_SLAVE, addr) < 0){
 		/* something really baaaad happened */
@@ -30,8 +32,28 @@ int main(void){
 	__s32 res;
 	char buf[10];
 
+	// useconds_t sleeptime=1000000;
+	// while(1){
+	// 	for(reg = 59; reg <= 64; reg++){
+	// 		res = i2c_smbus_read_word_data(myI2cDevice, reg);
+	// 		// printf("result[%d]: %d\n",(int32_t) reg, (int32_t) res);
+	// 		printf("%d\t", (int32_t) res);
+	// 	}
+	// 	printf("\n");
+	// 	usleep(sleeptime);
+	// }
+
+	useconds_t sleeptime=1000000;
+	while(1){
+		for(reg = 67; reg <= 72; reg++){
+			res = i2c_smbus_read_word_data(myI2cDevice, reg);
+			// printf("result[%d]: %d\n",(int32_t) reg, (int32_t) res);
+			printf("%d\t", (int32_t) res);
+		}
+		printf("\n");
+		usleep(sleeptime);
+	}
 	//  using SMBus commands 
-	res = i2c_smbus_read_word_data(myI2cDevice, reg);
 	// if(res < 0)
 
 	// buf[0] = reg;

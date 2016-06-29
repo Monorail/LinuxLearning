@@ -1,11 +1,22 @@
+6/29/16
+trying to: read from mpu-9250
+successfully read data from mpu using c userspace code
+had more success looking up mpu-6050 tutorials than mpu-9250
+followed a guide to displaying a plane on my machine from server pi values
+	useful for looking at simple examples of how other people initialize the device
+	http://blog.bitify.co.uk/2013/11/3d-opengl-visualisation-of-data-from.html
+
+for tomorrow: attempt to write kernel / i2c code to interface with MPU
+
+6/28/16
+read more of mpu-9250 datasheet
+fixed i2c_smbus_read_word_data not working
+	including i2c header was messing with i2c-dev header 
+https://www.raspberrypi.org/forums/viewtopic.php?f=31&t=19680
+
 6/27/16
 writing hello world i2c device driver for MPU-9250
 looked at guides at
     https://www.kernel.org/doc/Documentation/i2c/dev-interface
     https://www.kernel.org/doc/Documentation/i2c/functionality
 started lynda video series on embedded
-6/28/16
-read more of mpu-9250 datasheet
-fixed i2c_smbus_read_word_data not working
-	including i2c header was messing with i2c-dev header 
-https://www.raspberrypi.org/forums/viewtopic.php?f=31&t=19680
