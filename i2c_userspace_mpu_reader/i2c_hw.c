@@ -10,9 +10,20 @@
 // #include <linux/i2c.h>
 
 #define I2C_SMBUS_I2C_BLOCK_MAX 32  /* Not specified but we use same structure */
-#define I2C_SMBUS_WRITE 	0
-#define I2C_SMBUS_BYTE        1
 #define I2C_SMBUS	0x0720
+
+#define I2C_SMBUS_READ	1
+#define I2C_SMBUS_WRITE	0
+
+#define I2C_SMBUS_QUICK		    0
+#define I2C_SMBUS_BYTE		    1
+#define I2C_SMBUS_BYTE_DATA	    2 
+#define I2C_SMBUS_WORD_DATA	    3
+#define I2C_SMBUS_PROC_CALL	    4
+#define I2C_SMBUS_BLOCK_DATA	    5
+#define I2C_SMBUS_I2C_BLOCK_BROKEN  6
+#define I2C_SMBUS_BLOCK_PROC_CALL   7		/* SMBus 2.0 */
+#define I2C_SMBUS_I2C_BLOCK_DATA    8
 int fd;
 int acclX, acclY, acclZ;
 int gyroX, gyroY, gyroZ;
@@ -30,16 +41,15 @@ double gyroX_scaled, gyroY_scaled, gyroZ_scaled;
 //   int size ;
 //   union i2c_smbus_data *data ;
 // } ;
+int wiringPiI2CReadReg8 (int fd, int reg)
+{
+  union i2c_smbus_data data;
 
-// int read_word_2c(int device, __u8 reg){
-// 	int val = i2c_smbus_read_word_data(device, reg);
-// 	val = val << 8;
-// 	val += i2c_smbus_read_word_data(device, reg + 1);
-// 	if (val >= 0x8000)
-// 		val = -(65536 - val);
-// 	return val;
-// }
-
+  if (i2c_smbus_access (fd, I2C_SMBUS_READ, reg, I2C_SMBUS_BYTE_DATA, &data))
+    return -1 ;
+  else
+    return data.byte & 0xFF ;
+}
 int read_word_2c(int addr) {
 	int val = wiringPiI2CReadReg8(fd, addr);
 	val = val << 8;
@@ -48,6 +58,15 @@ int read_word_2c(int addr) {
 		val = -(65536 - val);
 	return val;
 }
+//
+// int read_word_2c(int device, __u8 reg){
+// 	int val = i2c_smbus_read_word_data(device, reg);
+// 	val = val << 8;
+// 	val += i2c_smbus_read_word_data(device, reg + 1);
+// 	if (val >= 0x8000)
+// 		val = -(65536 - val);
+// 	return val;
+// }
 
 
 /*
@@ -133,7 +152,7 @@ int main(void) {
 		printf("My X rotation: %f\n", get_x_rotation(acclX_scaled, acclY_scaled, acclZ_scaled));
 		printf("My Y rotation: %f\n", get_y_rotation(acclX_scaled, acclY_scaled, acclZ_scaled));
 		printf("\n\n\n\n\n");
-		delay(1000);
+		sleep(1);
 	}
 
 	// yes, unreachable

@@ -1,6 +1,8 @@
 7/10/16
 made wiringpi lib: link using gcc .. -lwiringPi
-
+fixed mistake trying to use i2c_smbus_read_word_data to read registers
+	i2c_smbus_read_word_data is used to issue commands to the device and returns the answer
+	the correct command to use was i2c_smbus_access(...) with a I2C_SMBUS_READ flag
 
 
 ..destroyed some entries :(...
