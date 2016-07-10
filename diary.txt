@@ -1,3 +1,11 @@
+7/10/16
+made wiringpi lib: link using gcc .. -lwiringPi
+
+
+
+..destroyed some entries :(...
+
+
 6/29/16
 trying to: read from mpu-9250
 successfully read data from mpu using c userspace code
