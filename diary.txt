@@ -1,3 +1,6 @@
+7/13/16
+started following guide to set up imu filter
+
 7/10/16
 made wiringpi lib: link using gcc .. -lwiringPi
 fixed mistake trying to use i2c_smbus_read_word_data to read registers

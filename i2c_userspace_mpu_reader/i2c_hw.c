@@ -99,16 +99,6 @@ int wiringPiI2CSetup (const int devId)
 
 
 
-static inline int i2c_smbus_write ( int fd, int data) {
-  struct i2c_smbus_ioctl_data args ;
-
-  args.read_write = I2C_SMBUS_WRITE ;
-  args.command    = data ;
-  args.size       = I2C_SMBUS_BYTE ;
-  args.data       = NULL ;
-  ioctl (fd, I2C_SMBUS, &args) ;
-}
-
 double dist(double a, double b) {
 	return sqrt((a*a) + (b*b));
 }
@@ -132,6 +122,13 @@ int wiringPiI2CWriteReg8 (int fd, int reg, int value)
   return i2c_smbus_access (fd, I2C_SMBUS_WRITE, reg, I2C_SMBUS_BYTE_DATA, &data) ;
 }
 
+void readAccelerometer(int *accArr) {
+	int block[3];
+	block[0] = read_word_2c(0x3B);
+	block[1] = read_word_2c(0x3D);
+	block[2] = read_word_2c(0x3F);
+	return block;
+}
 
 int main(void) {
 	fd = wiringPiI2CSetup (0x68);
@@ -139,9 +136,6 @@ int main(void) {
 	printf("set 0x6B=%X\n",wiringPiI2CReadReg8 (fd,0x6B));
 
 	while(1) {
-		acclX = read_word_2c(0x3B);
-		acclY = read_word_2c(0x3D);
-		acclZ = read_word_2c(0x3F);
 		acclX_scaled = acclX / 16384.0;
 		acclY_scaled = acclY / 16384.0;
 		acclZ_scaled = acclZ / 16384.0;
