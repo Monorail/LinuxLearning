@@ -10,9 +10,9 @@ int main(int argc, char *argv[]){
 	int sock;
 	struct sockaddr_in server;
 	int mysock;
-	char buff[1024];
+	float buff[1024];
 	int rval;
-
+	int i;
 	sock = socket(AF_INET, SOCK_STREAM, 0);
 	if(sock < 0){
 		perror("Couldnt create socket");
@@ -37,10 +37,12 @@ int main(int argc, char *argv[]){
 		} else if (rval == 0){
 			printf("Ending connection\n");
 		} else {
-			printf("MSG %s\n", buff);
+			for(i = 0; i < 3;i++)
+				printf("%i: %f\n",i, buff[i]);
+			printf("\n");
 		}
 
-		printf("Received message rval = %d\n", rval);
+		// printf("Received message rval = %d\n", rval);
 		close(mysock);
 	} 
 

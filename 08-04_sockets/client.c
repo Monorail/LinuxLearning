@@ -7,15 +7,18 @@
 #include <unistd.h>
 #include <netdb.h>
 
-#define DATA "Hello world!"
-
 int main(int argc, char *argv[]){
 	int sock;
 	struct sockaddr_in server;
 	struct hostent *hp;
-	char buff[1024];
+	float buff[1024];
+	
+	buff[0] = 666.0;
+	buff[1] = 666.0;
+	buff[2] = 666.0;
 	int i = 0;
-	for(i = 0; i < 1000; i++){
+	int ms = 0;
+	for(i = 0; i < 1000; i++) {
 		sock = socket(AF_INET, SOCK_STREAM, 0);
 		if(sock < 0){
 			perror("Couldnt create socket");
@@ -40,12 +43,15 @@ int main(int argc, char *argv[]){
 			close(sock);
 			exit(1);
 		}
-		if(send(sock, DATA, sizeof(DATA), 0) < 0){
+		if(send(sock, buff, sizeof(buff), 0) < 0){
 			perror("gethostbyname failed");
 			close(sock);
 			exit(1);
 		}
-		printf("Sent %s\n", DATA);
+		buff[0]++;
+		buff[1]++;
+		buff[2]++;
+		usleep(1000 * ms++);
 		close(sock);
 	}
 
