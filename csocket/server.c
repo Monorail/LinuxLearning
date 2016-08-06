@@ -8,7 +8,7 @@
 #include <string.h>
 #include <sys/types.h>
 #include <time.h> 
-#define CONNECT_PORT 6789
+
 int main(int argc, char *argv[])
 {
     printf("Start\n");
@@ -23,7 +23,7 @@ int main(int argc, char *argv[])
 
     serv_addr.sin_family = AF_INET;
     serv_addr.sin_addr.s_addr = htonl(INADDR_ANY);
-    serv_addr.sin_port = htons(CONNECT_PORT); 
+    serv_addr.sin_port = htons(5000); 
 
     bind(listenfd, (struct sockaddr*)&serv_addr, sizeof(serv_addr)); 
 
@@ -31,8 +31,8 @@ int main(int argc, char *argv[])
 
     printf("Starting server\n");
     while(1) {
-        printf("Server Tick\n");
         connfd = accept(listenfd, (struct sockaddr*)NULL, NULL); 
+        printf("Rec req\n");
 
         ticks = time(NULL);
         snprintf(sendBuff, sizeof(sendBuff), "%.24s\r\n", ctime(&ticks));
