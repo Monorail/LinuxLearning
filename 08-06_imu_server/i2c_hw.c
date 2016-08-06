@@ -7,11 +7,11 @@ double acclX_scaled, acclY_scaled, acclZ_scaled;
 double gyroX_scaled, gyroY_scaled, gyroZ_scaled;
 
 int main(void) {
-	fd = openDevice (0x68);
+	fd = openDevice (&fd, 0x68);
 	wiringPiI2CWriteReg8 (fd,0x6B,0x00);//disable sleep mode 
 	printf("set 0x6B=%X\n",wiringPiI2CReadReg8 (fd,0x6B));
 	
-	int gyroConf = read_word_2c(27);
+	int gyroConf = read_word_2c(fd, 27);
 	gyroConf |= 0b00011000;
 	wiringPiI2CWriteReg8(fd, 27, gyroConf);
 	

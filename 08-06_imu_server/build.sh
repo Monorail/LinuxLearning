@@ -1,1 +1,1 @@
-gcc i2c_hw.c -lm && ./a.out
+gcc client.c -lm && ./a.out 192.168.5.106

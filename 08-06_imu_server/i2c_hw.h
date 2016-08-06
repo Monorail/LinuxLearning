@@ -9,7 +9,6 @@
 #include <time.h>
 #include <math.h>
 #include <sys/types.h>
-// #include <linux/i2c.h>
 
 #define I2C_SMBUS_I2C_BLOCK_MAX 32  /* Not specified but we use same structure */
 #define I2C_SMBUS	0x0720
@@ -33,20 +32,19 @@
 #define G_GAIN 0.07
 #define DT 0.02
 #define AA 0.98
-int openDevice (const int devId);
-int read_word_2c(int addr);
+
+void openDevice (int *fd, const int devId);
+int read_word_2c(int fd, int addr);
 int wiringPiI2CReadReg8 (int fd, int reg);
 int wiringPiI2CWriteReg8 (int fd, int reg, int value);
 int mymillis();
 double dist(double a, double b);
 double get_y_rotation(double x, double y, double z);
 double get_x_rotation(double x, double y, double z);
-void readAccelerometer(int *accArr);
-void readGyro(int *gyrArr);
+void readAccelerometer(int fd, int *accArr);
+void readGyro(int fd, int *gyrArr);
 void calibGyro(int *gyrDef);
-
-
-int fd;
+int setup_mpu();
 
 int mymillis() {
 	struct timeval tv;
@@ -75,7 +73,9 @@ int wiringPiI2CReadReg8 (int fd, int reg)
   else
     return data.byte & 0xFF ;
 }
-int read_word_2c(int addr) {
+
+
+int read_word_2c(int fd, int addr) {
 	int val = wiringPiI2CReadReg8(fd, addr);
 	val = val << 8;
 	val += wiringPiI2CReadReg8(fd, addr+1);
@@ -83,15 +83,6 @@ int read_word_2c(int addr) {
 		val = -(65536 - val);
 	return val;
 }
-//
-// int read_word_2c(int device, __u8 reg){
-// 	int val = i2c_smbus_read_word_data(device, reg);
-// 	val = val << 8;
-// 	val += i2c_smbus_read_word_data(device, reg + 1);
-// 	if (val >= 0x8000)
-// 		val = -(65536 - val);
-// 	return val;
-// }
 
 
 /*
@@ -100,20 +91,18 @@ int read_word_2c(int addr) {
  *********************************************************************************
  */
 
-int openDevice (const int devId) {
+void openDevice (int *fd ,const int devId) {
 	int rev ;
 	const char *device ;
 
 	device = "/dev/i2c-1" ;
   // ("/dev/i2c-1", 0x68) int fd ;
 
-	if ((fd = open (device, O_RDWR)) < 0)
-		return -1; //wiringPiFailure (WPI_ALMOST, "Unable to open I2C device: %s\n", strerror (errno)) ;
+	if ((*fd = open (device, O_RDWR)) < 0)
+		return; //wiringPiFailure (WPI_ALMOST, "Unable to open I2C device: %s\n", strerror (errno)) ;
 
-	if (ioctl (fd, I2C_SLAVE, devId) < 0)
-		return -1; //wiringPiFailure (WPI_ALMOST, "Unable to select I2C device: %s\n", strerror (errno)) ;
-
-	return fd ;
+	if (ioctl (*fd, I2C_SLAVE, devId) < 0)
+		return; //wiringPiFailure (WPI_ALMOST, "Unable to select I2C device: %s\n", strerror (errno)) ;
 }
 
 
@@ -141,16 +130,29 @@ int wiringPiI2CWriteReg8 (int fd, int reg, int value)
   return i2c_smbus_access (fd, I2C_SMBUS_WRITE, reg, I2C_SMBUS_BYTE_DATA, &data) ;
 }
 
-void readAccelerometer(int *accArr) {
-	accArr[0] = read_word_2c(0x3B);
-	accArr[1] = read_word_2c(0x3D);
-	accArr[2] = read_word_2c(0x3F);
+void readAccelerometer(int fd, int *accArr) {
+	accArr[0] = read_word_2c(fd, 0x3B);
+	accArr[1] = read_word_2c(fd, 0x3D);
+	accArr[2] = read_word_2c(fd, 0x3F);
 	// return accArr;
 }
 
-void readGyro(int *gyrArr) {
-	gyrArr[0] = read_word_2c(0x3B);
-	gyrArr[1] = read_word_2c(0x3D);
-	gyrArr[2] = read_word_2c(0x3F);
+void readGyro(int fd, int *gyrArr) {
+	gyrArr[0] = read_word_2c(fd, 0x3B);
+	gyrArr[1] = read_word_2c(fd, 0x3D);
+	gyrArr[2] = read_word_2c(fd, 0x3F);
 	// return gyrArr;
+}
+
+int setup_mpu() {
+	int mpu_file_desc;
+	openDevice(&mpu_file_desc, 0x68);
+	
+	wiringPiI2CWriteReg8 (mpu_file_desc, 0x6B, 0x00);//disable sleep mode 
+	
+	int gyroConf = read_word_2c(mpu_file_desc, 27);
+	gyroConf |= 0b00011000;
+	wiringPiI2CWriteReg8(mpu_file_desc, 27, gyroConf);	
+	
+	return mpu_file_desc;
 }
