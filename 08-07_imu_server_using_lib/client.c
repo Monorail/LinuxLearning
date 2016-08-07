@@ -7,6 +7,7 @@
 #include <unistd.h>
 #include <netdb.h>
 #include "i2c_hw.h"
+#include "six_axis_comp_filter.h"
 
 int main(int argc, char *argv[]){
 	/* mpu setup */
