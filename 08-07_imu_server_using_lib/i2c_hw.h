@@ -32,6 +32,7 @@
 #define G_GAIN 0.07
 #define DT 0.02
 #define AA 0.98
+#define TAU 2.0
 
 void openDevice (int *fd, const int devId);
 int read_word_2c(int fd, int addr);
@@ -43,7 +44,7 @@ double get_y_rotation(double x, double y, double z);
 double get_x_rotation(double x, double y, double z);
 void readAccelerometer(int fd, int *accArr);
 void readGyro(int fd, int *gyrArr);
-void calibGyro(int *gyrDef);
+void calibGyro(float *gyrDef);
 int setup_mpu();
 
 int mymillis() {

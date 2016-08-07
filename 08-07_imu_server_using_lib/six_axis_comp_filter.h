@@ -68,7 +68,7 @@ extern "C"
 #define DEG_TO_RAD_RATIO    0.0174532f
 #define RAD_TO_DEG_RATIO    57.2957795f
 
-typedef struct
+typedef struct SixAxis
 {
     //
     // The time delta between updates. deltaT = 1/(sampling frequency)
