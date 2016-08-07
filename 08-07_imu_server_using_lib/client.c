@@ -65,7 +65,7 @@ int main(int argc, char *argv[]){
 		CompAccelUpdate(sixaxisctrls, accelArr[0], accelArr[1], accelArr[2]);
 		CompGyroUpdate(sixaxisctrls, gyroArr[0], gyroArr[1], gyroArr[2]);
 		CompAnglesGet(sixaxisctrls, &cfAngles[0], &cfAngles[1]);
-		printf("X %f Y %f\n", cfAngles[0], cfAngles[1]);
+		printf("X %f Y %f\n", CompRadiansToDegrees(cfAngles[0]), CompRadiansToDegrees(cfAngles[1]));
 		// buff[0] = cfAngles[0];
 		// buff[1] = cfAngles[1];
 		// buff[2] = 0.0;
