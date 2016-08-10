@@ -6,6 +6,7 @@
 #include <stdlib.h>
 #include <unistd.h>
 #include <netdb.h>
+#include <math.h>
 #include "i2c_hw.h"
 #include "six_axis_comp_filter.c"
 
@@ -60,12 +61,19 @@ int main(int argc, char *argv[]){
   //       cfAngles[0] = AA*(cfAngles[0]+rate_gyr_x*DT) +(1 - AA) * accAngles[0];
 		// cfAngles[1] = AA*(cfAngles[1]+rate_gyr_y*DT) +(1 - AA) * accAngles[1];
 		
-
-
+		//grab IMU junk
 		CompAccelUpdate(sixaxisctrls, accelArr[0], accelArr[1], accelArr[2]);
 		CompGyroUpdate(sixaxisctrls, gyroArr[0], gyroArr[1], gyroArr[2]);
 		CompAnglesGet(sixaxisctrls, &cfAngles[0], &cfAngles[1]);
-		printf("X %f Y %f\n", CompRadiansToDegrees(cfAngles[0]), CompRadiansToDegrees(cfAngles[1]));
+		
+
+		// upright
+		cfAngles[1] += 3*PI/2;
+		cfAngles[1] = fmod(cfAngles[1], 2 * PI);
+		// calc mouse screen pos
+		float mouseX = 1920/2 + 1920/2*(cosf(cfAngles[1]))* cosf(cfAngles[0]);// * 1920/2 ;
+		float mouseY = 1080/2 + 1080/2*(sinf(cfAngles[1]))* cosf(cfAngles[0]);// * 1080/2 ;
+		printf("Mag %3.3f\tDeg %3.3f\tX %3.3f\tY %3.3f\n", sinf(cfAngles[0]), RAD_TO_DEG * cfAngles[1], mouseX, mouseY);
 		// buff[0] = cfAngles[0];
 		// buff[1] = cfAngles[1];
 		// buff[2] = 0.0;
