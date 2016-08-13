@@ -44,22 +44,23 @@ int main(int argc, char *argv[]){
 		} else if (rval == 0){
 			printf("Ending connection\n");
 		} else {
-			for(i = 0; i < 3;i++)
-				printf("%i: %f\n",i, buff[i]);
-			printf("\n");
-		}
-		int x = (int) buff[0];
-		int y = (int) buff[1];
-		XSelectInput(dpy, root_window, KeyReleaseMask);
-		XWarpPointer(dpy, 				// display,
-					 None,	 			// src_w,
-					 root_window, 		// dest_w,
-					 0, 0, 				// src_x, src_y,
-					 0, 0, 				// src_width, src_height,
-					 buff[0], buff[1] 	// dest_x, dest_y
-					 );			
+			// for(i = 0; i < 3;i++)
+			// 	printf("%i: %f\n",i, buff[i]);
+			// printf("\n");
+			int x = (int) buff[0];
+			int y = (int) buff[1];
+			printf("[%3d\t%3d]\n", x, y);
+			XSelectInput(dpy, root_window, KeyReleaseMask);
+			XWarpPointer(dpy, 				// display,
+						 None,	 			// src_w,
+						 root_window, 		// dest_w,
+						 0, 0, 				// src_x, src_y,
+						 0, 0, 				// src_width, src_height,
+						 buff[0], buff[1] 	// dest_x, dest_y
+						 );			
 
-		XFlush(dpy);
+			XFlush(dpy);
+		}
 
 		// printf("Received message rval = %d\n", rval);
 		close(mysock);

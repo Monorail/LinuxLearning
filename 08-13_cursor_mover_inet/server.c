@@ -5,7 +5,8 @@
 #include <string.h>
 #include <stdlib.h>
 #include <unistd.h>
-
+#include "cursor.h"
+// -lX11
 int main(int argc, char *argv[]){
 	int sock;
 	struct sockaddr_in server;
@@ -29,6 +30,12 @@ int main(int argc, char *argv[]){
 	}
 
 	listen(sock, 5);
+	//Get system window
+	Display *dpy;
+	Window root_window;
+
+	dpy = XOpenDisplay(0);
+	root_window = XRootWindow(dpy, 0);
 
 	while(1){
 		mysock = accept(sock, (struct sockaddr *) 0, 0);
@@ -37,9 +44,22 @@ int main(int argc, char *argv[]){
 		} else if (rval == 0){
 			printf("Ending connection\n");
 		} else {
-			for(i = 0; i < 3;i++)
-				printf("%i: %f\n",i, buff[i]);
-			printf("\n");
+			// for(i = 0; i < 3;i++)
+			// 	printf("%i: %f\n",i, buff[i]);
+			// printf("\n");
+			int x = (int) buff[0];
+			int y = (int) buff[1];
+			printf("[%3d\t%3d]\n", x, y);
+			XSelectInput(dpy, root_window, KeyReleaseMask);
+			XWarpPointer(dpy, 				// display,
+						 None,	 			// src_w,
+						 root_window, 		// dest_w,
+						 0, 0, 				// src_x, src_y,
+						 0, 0, 				// src_width, src_height,
+						 buff[0], buff[1] 	// dest_x, dest_y
+						 );			
+
+			XFlush(dpy);
 		}
 
 		// printf("Received message rval = %d\n", rval);
