@@ -70,47 +70,61 @@ int main(int argc, char *argv[]){
 		// upright
 		cfAngles[1] += 3*PI/2;
 		cfAngles[1] = fmod(cfAngles[1], 2 * PI);
+
 		// calc mouse screen pos
-		float mouseX = 1920/2 + 1920/2*(cosf(cfAngles[1]))* cosf(cfAngles[0]);// * 1920/2 ;
-		float mouseY = 1080/2 + 1080/2*(sinf(cfAngles[1]))* cosf(cfAngles[0]);// * 1080/2 ;
-		printf("Mag %3.3f\tDeg %3.3f\tX %3.3f\tY %3.3f\n", sinf(cfAngles[0]), RAD_TO_DEG * cfAngles[1], mouseX, mouseY);
-		// buff[0] = cfAngles[0];
-		// buff[1] = cfAngles[1];
-		// buff[2] = 0.0;
+		float mouseX = 1920/2 + 1920/2*(cosf(cfAngles[1]));// * 1920/2 ;
+
+		float mouseY = PI - cfAngles[0];
+		// mouseY = fmod(mouseY, 2 * PI);
+		if(mouseY < 0) mouseY += 2 * PI;
+		if(mouseY > (PI / 2)){
+			if(mouseY <= 5*PI/4)
+				mouseY = PI/2;
+			else if(mouseY > 5*PI/4)
+				mouseY = 0;
+		}
+		mouseY = 1080 * sinf(mouseY);
+		printf("X: %3.0f\n", mouseX);
+		printf("Y: %3.0f\t", mouseY);
+		// printf("Y: %3.3f\n", mouseY);
+		// printf("Mag %3.3f\tDeg %3.3f\tX %3.3f\tY %3.3f\n", sinf(cfAngles[0]), RAD_TO_DEG * cfAngles[1], mouseX, mouseY);
+		buff[0] = mouseX;
+		buff[1] = mouseY;
+		buff[2] = 0.0;
 
 
 
-		// sock = socket(AF_INET, SOCK_STREAM, 0);
-		// if(sock < 0){
-		// 	perror("Couldnt create socket");
-		// 	close(sock);
-		// 	exit(1);
-		// }
+		sock = socket(AF_INET, SOCK_STREAM, 0);
+		if(sock < 0){
+			perror("Couldnt create socket");
+			close(sock);
+			exit(1);
+		}
 
-		// server.sin_family = AF_INET;
+		server.sin_family = AF_INET;
 
-		// hp = gethostbyname(argv[1]);
-		// if(hp == 0){
-		// 	perror("gethostbyname failed");
-		// 	close(sock);
-		// 	exit(1);
-		// }
+		hp = gethostbyname(argv[1]);
+		if(hp == 0){
+			perror("gethostbyname failed");
+			close(sock);
+			exit(1);
+		}
 
-		// memcpy(&server.sin_addr, hp->h_addr, hp->h_length);
-		// server.sin_port = htons(5000);
+		memcpy(&server.sin_addr, hp->h_addr, hp->h_length);
+		server.sin_port = htons(5000);
 
-		// if(connect(sock, (struct sockaddr *) &server, sizeof(server)) < 0){
-		// 	perror("connect failed");
-		// 	close(sock);
-		// 	exit(1);
-		// }
-		// if(send(sock, buff, sizeof(buff), 0) < 0){
-		// 	perror("gethostbyname failed");
-		// 	close(sock);
-		// 	exit(1);
-		// }
+		if(connect(sock, (struct sockaddr *) &server, sizeof(server)) < 0){
+			perror("connect failed");
+			close(sock);
+			exit(1);
+		}
+		if(send(sock, buff, sizeof(buff), 0) < 0){
+			perror("gethostbyname failed");
+			close(sock);
+			exit(1);
+		}
 
-		// close(sock);
+		close(sock);
 
         while(mymillis() - startInt < 20) {
             usleep(100);
