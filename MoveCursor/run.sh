@@ -1,1 +1,2 @@
-scp /home/alex/pi_fs/home/pi/LinuxLearning/MoveCursor/movecursor.c alex@192.168.5.106:/home/alex/LinuxLearning/MoveCursor; ssh alex@192.168.5.106 "export DISPLAY=:0.0; cd  ~/LinuxLearning/MoveCursor; gcc movecursor.c -lX11; ./a.out"
+scp /home/alex/pi_fs/home/pi/LinuxLearning/08-13_cursor_mover_inet/server.c alex@192.168.5.106:/home/alex/LinuxLearning/08-13_cursor_mover_inet/
+ssh alex@192.168.5.106 "export DISPLAY=:0.0; cd  ~/LinuxLearning/08-13_cursor_mover_inet; gcc server.c -lX11 -lm; ./a.out"
